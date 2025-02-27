@@ -10,20 +10,20 @@ import {
 import TradingChart from "@/components/TradingChart";
 import OrderBook from "@/components/OrderBook";
 import { TRADING_PAIRS, TIMEFRAMES } from "@/config";
-import { OHLCVData } from "@/types";
+import { OHLCVData, LatestCandle, OrderBookData } from "@/types";
 
 export default function Home() {
-  const [selectedPair, setSelectedPair] = useState("BTCUSDT");
-  const [selectedTimeframe, setSelectedTimeframe] = useState("1m");
+  const [selectedPair, setSelectedPair] = useState<string>("BTCUSDT");
+  const [selectedTimeframe, setSelectedTimeframe] = useState<string>("1m");
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [ohlcvData, setOhlcvData] = useState<OHLCVData[]>([]);
 
-  const price = useBinanceLivePrice(selectedPair.toLowerCase());
-  const latestCandle = useBinanceOHLCV(selectedPair.toLowerCase(), selectedTimeframe);
-  const { orderBook, isReady: isOrderBookReady } = useBinanceOrderBook(selectedPair.toLowerCase());
+  const price: number | null = useBinanceLivePrice(selectedPair.toLowerCase());
+  const latestCandle: LatestCandle = useBinanceOHLCV(selectedPair.toLowerCase(), selectedTimeframe);
+  const { orderBook, isReady: isOrderBookReady }: { orderBook: OrderBookData; isReady: boolean } = useBinanceOrderBook(selectedPair.toLowerCase());
 
-  const handleSelectionChange = (type: "pair" | "timeframe", value: string) => {
+  const handleSelectionChange = (type: "pair" | "timeframe", value: string): void => {
     setIsLoading(true);
     setOhlcvData([]);
 
@@ -37,7 +37,7 @@ export default function Home() {
   useEffect(() => {
     async function fetchData() {
       const historicalData = await fetchOHLCV(selectedPair, selectedTimeframe);
-      setOhlcvData(historicalData);
+      setOhlcvData(historicalData as OHLCVData[]);
       setIsLoading(false);
     }
     fetchData();
@@ -70,9 +70,7 @@ export default function Home() {
             ))}
           </select>
         </div>
-        <div className="bg-gray-700 p-2 rounded-lg text-center text-green-400 font-bold min-w-[120px]">
-          {price !== null ? `$${price.toFixed(2)}` : "Loading..."}
-        </div>
+
         <div>
           <label className="text-sm text-gray-400">Timeframe:</label>
           <select

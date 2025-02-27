@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { BINANCE_WS_URL } from "@/config";
-import { OrderBookData, OHLCVData, LatestCandle } from "@/types";
+import { OrderBookData, LatestCandle } from "@/types";
+import { Time } from "lightweight-charts";
 
 export function useBinanceLivePrice(symbol = "btcusdt") {
   const [price, setPrice] = useState<number | null>(null);
@@ -34,7 +35,7 @@ export function useBinanceLivePrice(symbol = "btcusdt") {
 }
 
 export function useBinanceOHLCV(symbol = "btcusdt", interval = "1m") {
-  const [latestCandle, setLatestCandle] = useState<LatestCandle | null>(null);
+  const [latestCandle, setLatestCandle] = useState<LatestCandle>(null);
   const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
@@ -49,7 +50,7 @@ export function useBinanceOHLCV(symbol = "btcusdt", interval = "1m") {
       const data = JSON.parse(event.data);
       const candle = data.k;
       setLatestCandle({
-        time: candle.t / 1000,
+        time: candle.t / 1000 as Time,
         open: parseFloat(candle.o),
         high: parseFloat(candle.h),
         low: parseFloat(candle.l),

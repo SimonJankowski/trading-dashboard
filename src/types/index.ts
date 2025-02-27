@@ -1,12 +1,4 @@
 import { CandlestickData } from "lightweight-charts";
-export interface OHLCVData {
-  time: number;
-  open: number;
-  high: number;
-  low: number;
-  close: number;
-  volume: number;
-}
 
 export interface OrderBookData {
   bids: [string, string][];
@@ -27,4 +19,11 @@ export type BinanceOHLCVResponse = [
   ...unknown[]
 ];
 
-export type LatestCandle = CandlestickData & { volume: number };
+export type LatestCandle = OHLCVData | null;
+
+export interface OHLCVData extends CandlestickData {
+  volume: number;
+}
+
+
+
